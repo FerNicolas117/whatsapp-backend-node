@@ -14,6 +14,13 @@ const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TO
 
 // Ruta de prueba rápida
 app.post('/send-whatsapp', async (req, res) => {
+  const token = req.headers['x-api-key'];
+
+  if (!token || token !== process.env.API_SECRET) {
+    console.error('Acceso denegado: token inválido o ausente');
+    return res.status(403).json({ success: false, error: 'Acceso denegado' });
+  }
+
   const { to, message, mediaUrl } = req.body;
 
   if (!Array.isArray(to)) {
